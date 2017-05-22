@@ -1,0 +1,3 @@
+LICENSE merge=ours
+*.feature text eol=lf
+*.os text eol=lf
