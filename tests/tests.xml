@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<testsuites tests="2" name="xUnitFor1C" time="10.722145" failures="0" skipped="0">
-    <testsuite name="">
-        <properties />
-        <testcase classname="unpack-tests" name="Тест_ДолженПроверитьЧтоКонфигурацияРазобранаНаИсходники" status="passed" />
-        <testcase classname="unpack-tests" name="Тест_ДолженПроверитьЧтоКонфигурацияСобранаИзИсходников" status="passed" />
-    </testsuite>
-</testsuites>

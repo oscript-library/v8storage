@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites tests="2" name="xUnitFor1C" time="29.620582" failures="0" skipped="0">
+    <testsuite name="">
+        <properties />
+        <testcase classname="v8storage-tests" name="Тест_ДолженСформироватьОтчетПоХранилищю" status="passed" />
+        <testcase classname="v8storage-tests" name="Тест_ДолженПолучитьВерсиюИзХранилища" status="passed" />
+    </testsuite>
+</testsuites>
