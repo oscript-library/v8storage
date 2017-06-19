@@ -1,2 +1,3 @@
 exec.log
-./test-reports
+test-reports/*.*
+*.ospx
