@@ -1,7 +1,7 @@
 The MIT License (MIT)
 =====================
 
-Copyright © `2016` `Nikita Gryzlov <nixel2007@gmail.com>`
+Copyright © `2017` `Khorev Aleksey <khorevaa@gmail.com>`
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
