@@ -1,4 +1,10 @@
 # v8storage
+[![Stars](https://img.shields.io/github/stars/khorevaa/v8storage.svg?label=Github%20%E2%98%85&a)](https://github.com/khorevaa/v8storage/stargazers)
+[![Release](https://img.shields.io/github/tag/khorevaa/v8storage.svg?label=Last%20release&a)](https://github.com/khorevaa/v8storage/releases)
+[![Открытый чат проекта https://gitter.im/EvilBeaver/oscript-library](https://badges.gitter.im/khorevaa/v8storage.png)](https://gitter.im/EvilBeaver/oscript-library)
+
+[![Build Status](https://travis-ci.org/khorevaa/v8storage.svg?branch=master)](https://travis-ci.org/khorevaa/v8storage)
+[![Coverage Status](https://coveralls.io/repos/github/khorevaa/v8storage/badge.svg?branch=master)](https://coveralls.io/github/khorevaa/v8storage?branch=master)
 
 ## Библиотека для упрощения работы с Хранилищем 1С из oscript.
 
