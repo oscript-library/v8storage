@@ -2,7 +2,9 @@ exec.log
 test-reports/*.*
 *.ospx
 bin/*
-*.xml
+test*.xml
+bdd-*.xml
+
 *.ospx
 
 coverage/*
