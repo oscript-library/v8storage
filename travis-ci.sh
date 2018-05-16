@@ -8,7 +8,8 @@ rm -f oscript.deb
 
 opm install 1testrunner; 
 opm install 1bdd; 
-opm install notify
+opm install notify;
+opm install coverage;
 opm install; 
 
 opm run coverage; 
