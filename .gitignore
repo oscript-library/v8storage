@@ -2,3 +2,9 @@ exec.log
 test-reports/*.*
 *.ospx
 bin/*
+*.xml
+*.ospx
+
+coverage/*
+
+.vscode/*

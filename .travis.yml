@@ -1,62 +1,79 @@
-sudo: required
+language: generic
 
-dist: trusty
+sudo: required
 
 notifications:
   email: false
-  
-before_install: 
-  - if [ $TRAVIS_OS_NAME == "linux" ]; then 
-      export CXX="g++-4.9" CC="gcc-4.9" DISPLAY=:99.0;
-      sh -e /etc/init.d/xvfb start;
-      sleep 3;
-    fi
-  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-  - echo "deb http://download.mono-project.com/repo/ubuntu trusty main" | sudo tee /etc/apt/sources.list.d/mono-official.list
-  - sudo apt-get update
-  - sudo apt-get install mono-complete mono-devel
-  - wget -O os.deb http://oscript.io/downloads/latest/onescript-engine_1.0.18_all.deb
-  - sudo dpkg -i *.deb; sudo apt install -f
-  - sudo oscript /usr/share/oscript/lib/opm/src/opm.os install opm
 
-install: 
-  - sudo oscript /usr/share/oscript/lib/opm/src/opm.os install 1testrunner
-  - sudo oscript /usr/share/oscript/lib/opm/src/opm.os install 1bdd
-  - sudo oscript /usr/share/oscript/lib/opm/src/opm.os install
+services:
+  - docker
+
+addons:
+    sonarqube: true
+
+before_install:
+ # Load cached docker images
+  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
+
+before_cache:
+  # Save tagged docker images
+  - >
+    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
+    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+
+install:
+    - docker pull harmit/ci-image
 
 env:
   global:
-  - CHANNEL=dev
-
+    - CHANNEL=dev
+    - PACKAGE_NAME=v8storage
+  matrix:
+    - OSCRIPT_VERSION=1_0_19
+    - OSCRIPT_VERSION=1_0_18
+    - OSCRIPT_VERSION=night-build
+matrix:
+  allow_failures:
+    - env: OSCRIPT_VERSION=night-build
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
+    - '$HOME/docker'
+
+script:
+  - docker version
+  - docker run -it -e OSCRIPT_VERSION=$OSCRIPT_VERSION -v $(pwd):/work_dir harmit/ci-image sh -c 'cd /work_dir; sh /work_dir/travis-ci.sh; exit' | tee /tmp/test.log
+  - grep 'Результат прогона тестов <Да>' /tmp/test.log
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - ./sonar-qube.sh
+
+
 jobs:
   include:
-    #- stage: Тестирование 
-    #  script: oscript /usr/share/oscript/lib/opm/src/opm.os test
     - stage: Сборка и публикация github & hub.oscript.io
-      script: skip 
+      script: skip
       before_deploy:
-        - oscript /usr/share/oscript/lib/opm/src/opm.os build ./
+        - docker run -it -v $(pwd):/work_dir harmit/ci-image sh -c 'cd /work_dir; opm build ./ ; exit'
       deploy:
         - provider: releases
           api_key: "$GITHUB_OAUTH_TOKEN"
           file_glob: true
-          file: v8storage*.ospx
+          file: $PACKAGE_NAME*.ospx
           skip_cleanup: true
           on:
             branch: master
             tags: true
         - provider: script
           skip_cleanup: true
-          script: oscript /usr/share/oscript/lib/opm/src/opm.os push --token $GITHUB_OAUTH_TOKEN --channel dev --file ./v8storage-*.ospx;
+          script: docker run -it -v $(pwd):/work_dir evilbeaver/onescript:1.0.19 sh -c 'cd /work_dir; opm push --token $GITHUB_OAUTH_TOKEN --channel dev --file ./$PACKAGE_NAME-*.ospx; exit'
           on:
             branch: develop
         - provider: script
           skip_cleanup: true
-          script: oscript /usr/share/oscript/lib/opm/src/opm.os push --token $GITHUB_OAUTH_TOKEN --channel stable --file ./v8storage-*.ospx;
+          script: docker run -it -v $(pwd):/work_dir evilbeaver/onescript:1.0.19 sh -c 'cd /work_dir; opm push --token $GITHUB_OAUTH_TOKEN --channel stable --file ./$PACKAGE_NAME-*.ospx; exit'
           on:
             branch: master
             tags: true
