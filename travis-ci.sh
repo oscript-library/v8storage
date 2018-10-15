@@ -10,7 +10,9 @@ opm install 1testrunner;
 opm install 1bdd; 
 opm install notify;
 opm install coverage;
-opm install; 
+opm install semver; 
+
+opm list
 
 opm run coverage; 
 
